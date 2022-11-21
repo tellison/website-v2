@@ -20,7 +20,7 @@ on:
   schedule:
     - cron: '15 16 * * 4'
 
-permissions:  # added using https://github.com/step-security/secure-workflows
+permissions:
   contents: read
 
 jobs:
