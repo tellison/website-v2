@@ -21,7 +21,7 @@ on:
 ###############
 # Set the Job #
 ###############
-permissions:  # added using https://github.com/step-security/secure-workflows
+permissions:
   contents: read
 
 jobs:
