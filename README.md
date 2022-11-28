@@ -1,6 +1,6 @@
 # Adoptium Site
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/359195e4-6832-4457-b67c-e79ddaf8c549/deploy-status)](https://app.netlify.com/sites/eclipsefdn-adoptium-v2/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/359195e4-6832-4457-b67c-e79ddaf8c549/deploy-status)](https://app.netlify.com/sites/eclipsefdn-adoptium/deploys) [![codecov](https://codecov.io/gh/adoptium/adoptium.net/branch/main/graph/badge.svg?token=XGJMJVT8BA)](https://codecov.io/gh/adoptium/adoptium.net) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/adoptium/adoptium.net/badge)](https://api.securityscorecards.dev/projects/github.com/adoptium/adoptium.net)
 
 This repository contains the source code for [https://adoptium.net](https://adoptium.net).
 
@@ -12,19 +12,18 @@ This is is a Node.js / npm driven stack with AsciiDoc used for static content an
 
 ## How to develop locally
 
-This assumes you already have Node.js and npm installed. At time of writing we use Node.js 16.14.0 and npm 8.3.1. We recommend using nvm to manage your versions.
+This assumes you already have Node.js and npm installed. Node.js version 18 or above is required. We recommend using nvm to manage your versions.
 
 1. Install your dependencies
 
     ```shell
-    npm install
-    npm install --global gatsby-cli
+    npm install --legacy-peer-deps
     ```
 
 1. Start the site up. Gatsby will build all of the various parts of the site (Asciidoc etc). Note that this command takes some time to execute.
 
     ```shell
-    gatsby develop
+    npm start
     ```
 
 1. **Open the source code and start editing!**

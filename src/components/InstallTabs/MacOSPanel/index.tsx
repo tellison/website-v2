@@ -1,9 +1,8 @@
-import { Link } from 'gatsby';
 import React from 'react';
 import ShellBox from '../../ShellBox';
 import '../InstallTabs.scss';
 
-const MacOSPanel = (): JSX.Element => {
+export const PureMacOSPanel = (): JSX.Element => {
   return (
     <div>
       <ShellBox>
@@ -42,6 +41,10 @@ const MacOSPanel = (): JSX.Element => {
       </a>
     </div>
   );
+};
+
+const MacOSPanel = (): JSX.Element => {
+  return <PureMacOSPanel />;
 };
 
 export default MacOSPanel;

@@ -10,32 +10,134 @@ module.exports = {
   siteMetadata: {
     title: 'Adoptium',
     description: 'Eclipse Adoptium provides prebuilt OpenJDK binaries from a fully open source set of build scripts and infrastructure. Supported platforms include Linux, macOS, Windows, ARM, Solaris, and AIX.',
-    author: 'Eclipse Adoptium'
+    author: 'Eclipse Adoptium',
+    siteUrl: 'https://adoptium.net',
+    social: {
+      twitter: 'Adoptium'
+    }
   },
   plugins: [
+    'gatsby-plugin-sitemap',
     {
       resolve: 'gatsby-source-filesystem',
       options: {
         name: 'asciidoc-pages',
-        path: path.join(__dirname, 'src/asciidoc-pages')
+        path: path.join(__dirname, 'content/asciidoc-pages'),
+        ignore: ['**/*.md']
       }
     },
     {
       resolve: 'gatsby-source-filesystem',
       options: {
+        name: 'blog',
+        path: path.join(__dirname, 'content/blog')
+      }
+    },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'assets',
+        path: path.join(__dirname, 'static/images/authors')
+      }
+    },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'locale',
         path: path.join(__dirname, 'locales'),
-        name: 'locale'
+        ignore: ['**/*.md']
       }
     },
     {
       resolve: 'gatsby-plugin-react-i18next',
       options: {
         localeJsonSourceName: 'locale',
-        languages: ['en', 'es', 'de'],
-        defaultLanguage: 'en'
+        languages: ['en', 'en-GB', 'es', 'de', 'zh-CN'],
+        defaultLanguage: 'en',
+        i18nextOptions: {
+          transSupportBasicHtmlNodes: true,
+          transKeepBasicHtmlNodesFor: ['u', 'a']
+        }
+      }
+    },
+    {
+      resolve: 'gatsby-plugin-feed',
+      options: {
+        query: `
+          {
+            site {
+              siteMetadata {
+                title
+                description
+                siteUrl
+                site_url: siteUrl
+              }
+            }
+          }
+        `,
+        feeds: [
+          {
+            serialize: ({ query: { site, allMdx } }) => {
+              return allMdx.edges.map(edge => {
+                return Object.assign({}, edge.node.frontmatter, {
+                  description: edge.node.excerpt,
+                  date: edge.node.frontmatter.date,
+                  url: site.siteMetadata.siteUrl + edge.node.fields.postPath,
+                  guid: site.siteMetadata.siteUrl + edge.node.fields.postPath
+                })
+              })
+            },
+            query: `
+              {
+                allMdx(sort: {frontmatter: {date: DESC}}, limit: 100) {
+                  totalCount
+                  edges {
+                    node {
+                      excerpt
+                      fields {
+                        slug
+                        postPath
+                      }
+                      frontmatter {
+                        date(formatString: "MMMM DD, YYYY")
+                        title
+                      }
+                    }
+                  }
+                }
+              }
+            `,
+            output: '/rss.xml',
+            title: 'Adoptium Blog',
+            match: undefined
+          }
+        ]
       }
     },
     'gatsby-transformer-asciidoc',
+    {
+      resolve: 'gatsby-plugin-mdx',
+      options: {
+        extensions: ['.md'],
+        mdxOptions: {
+          remarkPlugins: [
+            // Add GitHub Flavored Markdown (GFM) support
+            require('remark-gfm')
+          ]
+        },
+        gatsbyRemarkPlugins: [
+          {
+            resolve: 'gatsby-remark-images',
+            options: {
+              maxWidth: 720
+            }
+          },
+          'gatsby-remark-prismjs',
+          'gatsby-remark-copy-linked-files',
+          'gatsby-remark-smartypants'
+        ]
+      }
+    },
     {
       resolve: 'gatsby-plugin-google-gtag',
       options: {
@@ -101,9 +203,7 @@ module.exports = {
       }
     },
     'gatsby-plugin-netlify',
-    'gatsby-plugin-react-helmet',
     'gatsby-plugin-image',
-    'gatsby-plugin-use-query-params',
     {
       resolve: 'gatsby-plugin-react-svg',
       options: {

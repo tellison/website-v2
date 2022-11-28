@@ -1,0 +1,23 @@
+// Vitest Snapshot v1
+
+exports[`Layout component > renders correctly with data 1`] = `
+<div>
+  <div
+    class="container-fluid p-0"
+    style="transition: color 0.2s ease-out, background 0.2s ease-out;"
+  >
+    <div>
+      mock-navbar
+    </div>
+    <div>
+      mock-banner
+    </div>
+    <main>
+      mock-children
+    </main>
+    <div>
+      mock-footer
+    </div>
+  </div>
+</div>
+`;

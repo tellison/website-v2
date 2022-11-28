@@ -1,6 +1,13 @@
 import * as React from "react"
 
+import vendors from '../../json/marketplace.json';
 import './VendorSelector.scss';
+
+// Shuffle vendors
+//for (let i = vendors.length - 1; i > 0; i--) {
+//    const j = Math.floor(Math.random() * (i + 1));
+//    [vendors[i], vendors[j]] = [vendors[j], vendors[i]];
+//}
 
 const VendorSelector = ({
     checkboxRef,
@@ -12,22 +19,17 @@ const VendorSelector = ({
 
     return (
         <ul className="vendor-list pt-5">
-            <li className="vendor-li">
-                <input id="vendorAdoptium" ref={el => checkboxRef.current['vendorAdoptium'] = el} type="checkbox" defaultChecked={true} onChange={handleChange} />
-                <label className="vendor-label" htmlFor="vendorAdoptium" title="Adoptium"><img src="/images/vendors/vendor-adoptium.png"/></label>
-            </li>
-            <li className="vendor-li">
-                <input id="vendorMicrosoft" ref={el => checkboxRef.current['vendorMicrosoft'] = el} type="checkbox" defaultChecked={true} onChange={handleChange} />
-                <label className="vendor-label" htmlFor="vendorMicrosoft" title="Microsoft"><img src="/images/vendors/vendor-microsoft.png"/></label>
-            </li>
-            <li className="vendor-li">
-                <input id="vendorAzul" ref={el => checkboxRef.current['vendorAzul'] = el} type="checkbox" defaultChecked={true} onChange={handleChange} />
-                <label className="vendor-label" htmlFor="vendorAzul" title="Azul"><img src="/images/vendors/vendor-azul.png"/></label>
-            </li>
-            <li className="vendor-li">
-                <input id="vendorIBM" ref={el => checkboxRef.current['vendorIBM'] = el} type="checkbox" defaultChecked={true} onChange={handleChange} />
-                <label className="vendor-label" htmlFor="vendorIBM" title="IBM"><img src="/images/vendors/vendor-ibm.png"/></label>
-            </li>
+            {vendors.map(
+                (vendor, i): string | JSX.Element =>
+                    vendor && (
+                        <li key={vendor.name} className="vendor-li">
+                            <input id={`vendor${vendor.name}`} ref={el => checkboxRef.current[`vendor${vendor.name.replace(/\s+/g, '')}`] = el} type="checkbox" defaultChecked={true} onChange={handleChange} />
+                            <label className="vendor-label" htmlFor={`vendor${vendor.name}`} title={vendor.name}>
+                                <img src={`/images/vendors/${vendor.icon}`} alt={`${vendor.name} icon`} style={ vendor.iconPadding ? { padding:vendor.iconPadding} : {}}/>
+                            </label>
+                        </li>
+                )
+            )}
         </ul>
     );
 };

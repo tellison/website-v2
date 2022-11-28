@@ -3,9 +3,16 @@ publish = "public"
 command = "npm run build"
 
 [build.environment]
-NODE_VERSION = "16"
+NODE_VERSION = "18"
+NPM_FLAGS = "--legacy-peer-deps"
 GATSBY_CONCURRENT_DOWNLOAD = "15"
 GATSBY_CPU_COUNT = "1"
+
+[[redirects]]
+  from = "https://blog.adoptium.net/*"
+  to = "https://adoptium.net/blog/:splat"
+  status = 301
+  force = true
 
 [[redirects]]
   from = "/"

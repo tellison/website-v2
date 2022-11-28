@@ -2,28 +2,31 @@ name: Contributor Updater
 
 on:
   push:
-    paths:
-    - src/asciidoc-pages/**
-    branches:         
-    - main
+    paths: [ content/asciidoc-pages/** ]
+    branches: [ main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   check_contributors:
+    if: github.repository_owner == 'adoptium'
     name: Check Contributors
     runs-on: ubuntu-latest
     steps:
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
     - id: files
-      uses: jitterbit/get-changed-files@v1
+      uses: jitterbit/get-changed-files@b17fbb00bdc0c0f63fcf166580804b4d2cdc2a42 # v1
       
     - run: pip3 install bs4
 
     - run: |
         # shellcheck disable=2043
         for changed_file in ${{ steps.files.outputs.all }}; do
-          if [[ ${changed_file} =~ ^src/asciidoc.*.adoc ]]; then
+          if [[ ${changed_file} =~ ^content/asciidoc.*.adoc ]]; then
             current_authors=$(grep ':page-authors:' "${changed_file}" | sed -n -e 's/^.*page-authors: //p')
             contibutors=$(python3 .github/workflows/github-file-contributors.py --file "${changed_file}")
             for contibutor in ${contibutors}; do
@@ -37,13 +40,13 @@ jobs:
           fi
         done
 
-    - uses: gr2m/create-or-update-pull-request-action@v1
+    - uses: gr2m/create-or-update-pull-request-action@dc1726cbf4dd3ce766af4ec29cfb660e0125e8ee # v1
       env:
         GITHUB_TOKEN: ${{ secrets.ADOPTIUM_TEMURIN_BOT_TOKEN }}
       with:
         title: "Update Asciidoc Contributors"
         body: "This is an automatically generated pull request, it will be automatically merged if all the CI tests pass."
-        path: "src/asciidoc-pages/"
+        path: "content/asciidoc-pages/"
         branch: "contributor_bot"
         commit-message: "contributors: update asciidoc contributors"
         labels: automerge

@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Link, graphql } from 'gatsby'
+import { graphql } from 'gatsby'
+import { Link, Trans } from 'gatsby-plugin-react-i18next'
 import { FaArrowCircleRight } from 'react-icons/fa'
 
 import Layout from '../../components/Layout'
@@ -11,7 +12,6 @@ import { getAssetsForVersion } from '../../hooks'
 
 const TemurinReleases = () => (
   <Layout>
-    <Seo title='Archive' />
     <section className='py-5 text-center container'>
       <div className='row py-lg-5'>
         <div className='col-lg-10 col-md-8 mx-auto'>
@@ -30,10 +30,10 @@ const TemurinReleases = () => (
             </div>
             <div className='btn-group'>
               <Link to='/temurin/releases' className='btn btn-primary m-3'>
-                Latest releases <FaArrowCircleRight />
+                <Trans>Latest Releases</Trans> <FaArrowCircleRight />
               </Link>
               <Link to='/temurin/nightly' className='btn btn-secondary m-3'>
-                Nightly builds <FaArrowCircleRight />
+                <Trans>Nightly Builds</Trans> <FaArrowCircleRight />
               </Link>
             </div>
           </div>
@@ -46,6 +46,10 @@ const TemurinReleases = () => (
 )
 
 export default TemurinReleases
+
+export const Head = () => (
+  <Seo title='Archive' />
+)
 
 export const query = graphql`
   query ($language: String!) {

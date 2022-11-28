@@ -1,5 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { useQueryParam, NumberParam, StringParam } from 'use-query-params'
+import { Trans, useI18next } from 'gatsby-plugin-react-i18next'
+import { useLocation } from '@reach/router';
+import queryString from 'query-string';
 
 import DatePicker from 'react-date-picker';
 
@@ -7,27 +9,31 @@ import { versions, defaultVersion } from '../util/defaults'
 import { setURLParam } from '../util/setURLParam';
 
 const VersionSelector = ({updater, releaseType, Table}) => {
+  const { language } = useI18next();
   let selectedVersion = defaultVersion
-  let [versionParam] = useQueryParam('version', NumberParam)
+  const versionParam = queryString.parse(useLocation().search).version;
   if (versionParam) {
-      selectedVersion = versionParam;
+      selectedVersion = Number(versionParam);
   }
-  let [variantParam] = useQueryParam('variant', StringParam)
+  const variantParam = queryString.parse(useLocation().search).variant;
   if (variantParam) {
-      setURLParam('version', variantParam.replace(/\D/g, ''))
-      selectedVersion = parseInt(variantParam.replace(/\D/g, ''));
+      // convert openjdk11 to 11
+      const parsedVersion = variantParam.toString().replace(/\D/g, '')
+      setURLParam('version', parsedVersion)
+      selectedVersion = parseInt(parsedVersion);
   }
 
   const [version, udateVersion] = useState(selectedVersion.toString());
   const [numBuilds, udateNumBuilds] = useState(5);
+  const [page, updatePage] = useState(0);
   const [buildDate, updateBuildDate] = useState(new Date());  
   const [releases, setReleases] = useState(null);
 
   useEffect(() => {
     (async () => {
-      setReleases(await updater(version, releaseType, numBuilds, buildDate));
+      setReleases(await updater(version, releaseType, numBuilds, buildDate, page));
     })();
-  }, [version, numBuilds, buildDate]);
+  }, [version, numBuilds, buildDate, page]);
 
   const setVersion = useCallback((version) => {
     setURLParam('version', version);
@@ -41,10 +47,10 @@ const VersionSelector = ({updater, releaseType, Table}) => {
   return (
     <>
       <p className='text-center'>
-        Use the drop-down boxes below to filter the list of current releases.
+        <Trans>Use the drop-down boxes below to filter the list of current releases.</Trans>
       </p>
       <div className="input-group p-3 d-flex justify-content-center">
-        <label className="px-2 fw-bold" htmlFor="version">Version</label>
+        <label className="px-2 fw-bold" htmlFor="version"><Trans>Version</Trans></label>
         <select id="version-filter" onChange={(e) => setVersion(e.target.value)} value={version} className="form-select form-select-sm" style={{ maxWidth: '10em' }}>
             {versions.map(
                 (version, i): number | JSX.Element => version && (
@@ -68,10 +74,11 @@ const VersionSelector = ({updater, releaseType, Table}) => {
             value={buildDate}
             maxDate={new Date()}
             onChange={updateBuildDate}
+            locale={language}
           />
         </div>
       )}
-      <Table results={releases}/>
+      <Table results={releases} updatePage={updatePage}/>
     </>
   );
 };

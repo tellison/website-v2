@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 
 // List of repos that will be checked for contributions
 const repositories = [
-  'temurin-build', 'ci-jenkins-pipelines', 'infrastructure', 'aqa-tests', 'website-v2', 'api.adoptium.net', 'blog.adoptium.net', 'containers', 'installer',
+  'temurin-build', 'ci-jenkins-pipelines', 'infrastructure', 'aqa-tests', 'adoptium.net', 'api.adoptium.net', 'containers', 'installer',
   'STF', 'run-aqa', 'TKG', 'aqa-test-tooks', 'aqa-systemtest', 'bumblebench', 'jenkins-helper'
 ];
 
 // List of users to exclude from random contributor
-const excludedContributors = ['dependabot-preview[bot]', 'dependabot[bot]', 'eclipse-temurin-bot'];
+const excludedContributors = ['dependabot-preview[bot]', 'dependabot[bot]', 'github-actions[bot]', 'eclipse-temurin-bot'];
 
 const randomValue = (list) => {
     return list[Math.floor(Math.random() * list.length)];
@@ -69,12 +69,13 @@ async function getMaxContributors(): Promise<[number, number]> {
 
 /**
  * Retrieves a contributor's object by it's index in API
+ * only return 'type: User' to filter out Bot
  * @param randomPage
  */
 async function getContributor(randomPage: number): Promise<Contributor> {
   const response = await fetch(`${CONTRIBUTORS_API_URI}&page=${randomPage}`);
   const contributor = (await response.json())[0] as ContributorApiResponse;
-
+  
   return {
     avatarUri: contributor.avatar_url,
     commitsListUri: `https://github.com/adoptium/${repoToCheck}/commits?author=${contributor.login}`,

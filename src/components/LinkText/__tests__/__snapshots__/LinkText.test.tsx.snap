@@ -1,0 +1,23 @@
+// Vitest Snapshot v1
+
+exports[`LinkText component > external URL renders correctly 1`] = `
+<div>
+  <a
+    href="https://external-link.com"
+    rel="noreferrer"
+    target="_blank"
+  >
+    External Link
+  </a>
+</div>
+`;
+
+exports[`LinkText component > internal link renders correctly 1`] = `
+<div>
+  <a
+    href="/page1"
+  >
+    Page 1
+  </a>
+</div>
+`;
