@@ -9,11 +9,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
   check_contributors:
     if: github.repository_owner == 'adoptium'
     name: Check Contributors
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # required for script to update authors
+
     steps:
 
     - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
